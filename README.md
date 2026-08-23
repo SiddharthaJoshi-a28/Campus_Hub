@@ -54,16 +54,7 @@ CampusHub/
 | V2 | Java + Spring Boot REST API, MySQL database, real accounts (signup/login), deployment |
 | V3 | React frontend, charts/analytics, polish |
 
-### Suggested build order (from the original plan)
 
-1. Dashboard + CGPA calculator
-2. Assignment tracker
-3. Attendance tracker
-4. Notes + search
-5. MySQL database design
-6. Java Spring Boot backend + REST endpoints
-7. Login / signup (authentication)
-8. Deployment (e.g. Vercel/Netlify for frontend, Render/Railway for backend + DB)
 
 ## Tech stack
 
