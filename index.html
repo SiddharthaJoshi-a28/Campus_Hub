@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CampusHub — Your Semester, Organized</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="app">
+
+  <!-- ===== SIDEBAR ===== -->
+  <aside class="sidebar">
+    <div class="brand">
+      <span class="brand-mark">CH</span>
+      <div class="brand-text">
+        <span class="brand-name">CampusHub</span>
+        <span class="brand-sub">Sem. Control Panel</span>
+      </div>
+    </div>
+
+    <nav class="tabs" id="tabs">
+      <button class="tab active" data-section="dashboard">
+        <span class="tab-index">01</span>
+        <span class="tab-label">Dashboard</span>
+      </button>
+      <button class="tab" data-section="assignments">
+        <span class="tab-index">02</span>
+        <span class="tab-label">Assignments</span>
+      </button>
+      <button class="tab" data-section="cgpa">
+        <span class="tab-index">03</span>
+        <span class="tab-label">CGPA Calculator</span>
+      </button>
+      <button class="tab" data-section="attendance">
+        <span class="tab-index">04</span>
+        <span class="tab-label">Attendance</span>
+      </button>
+      <button class="tab" data-section="notes">
+        <span class="tab-index">05</span>
+        <span class="tab-label">Notes</span>
+      </button>
+    </nav>
+
+    <div class="sidebar-footer">
+      <button class="ghost-btn" id="exportBtn" title="Download a backup of all your data">Export data</button>
+      <button class="ghost-btn" id="importBtnTrigger" title="Restore data from a backup">Import data</button>
+      <input type="file" id="importFile" accept="application/json" hidden>
+      <span class="footer-note">Stored locally in this browser.</span>
+    </div>
+  </aside>
+
+  <!-- ===== MAIN ===== -->
+  <main class="main">
+
+    <!-- ---------- DASHBOARD ---------- -->
+    <section class="view active" id="view-dashboard">
+      <header class="view-header">
+        <div>
+          <p class="eyebrow" id="today-date">—</p>
+          <h1>Dashboard</h1>
+        </div>
+      </header>
+
+      <div class="grid dashboard-grid">
+
+        <div class="card span-2">
+          <div class="card-head">
+            <h2>Today's classes</h2>
+            <button class="link-btn" data-open-modal="classModal">+ Add class</button>
+          </div>
+          <div id="todayClassesList" class="stack"></div>
+        </div>
+
+        <div class="card">
+          <div class="card-head">
+            <h2>Quick notes</h2>
+          </div>
+          <textarea id="quickNotes" class="quick-notes" placeholder="Jot something down before it disappears from your brain…"></textarea>
+        </div>
+
+        <div class="card span-2">
+          <div class="card-head">
+            <h2>Upcoming assignments</h2>
+            <span class="tab-index-inline">02</span>
+          </div>
+          <div id="upcomingAssignments" class="stack"></div>
+        </div>
+
+        <div class="card">
+          <div class="card-head">
+            <h2>Upcoming exams</h2>
+          </div>
+          <div id="upcomingExams" class="stack"></div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ---------- ASSIGNMENTS ---------- -->
+    <section class="view" id="view-assignments">
+      <header class="view-header">
+        <div>
+          <p class="eyebrow">Deadlines & deliverables</p>
+          <h1>Assignment Tracker</h1>
+        </div>
+        <div class="header-tabs">
+          <button class="pill-tab active" data-subview="assignmentsPanel">Assignments</button>
+          <button class="pill-tab" data-subview="examsPanel">Exams</button>
+        </div>
+      </header>
+
+      <div id="assignmentsPanel" class="subview active">
+        <form id="assignmentForm" class="inline-form">
+          <input type="text" id="a_subject" placeholder="Subject" required>
+          <input type="text" id="a_title" placeholder="Assignment title" required>
+          <input type="date" id="a_deadline" required>
+          <select id="a_priority">
+            <option value="high">High priority</option>
+            <option value="medium" selected>Medium priority</option>
+            <option value="low">Low priority</option>
+          </select>
+          <button type="submit" class="primary-btn">Add assignment</button>
+        </form>
+
+        <div class="filter-row">
+          <button class="chip active" data-filter="all">All</button>
+          <button class="chip" data-filter="pending">Pending</button>
+          <button class="chip" data-filter="completed">Completed</button>
+        </div>
+
+        <div id="assignmentList" class="stack list-large"></div>
+      </div>
+
+      <div id="examsPanel" class="subview">
+        <form id="examForm" class="inline-form">
+          <input type="text" id="e_subject" placeholder="Subject" required>
+          <select id="e_type">
+            <option value="Quiz">Quiz</option>
+            <option value="Midterm" selected>Midterm</option>
+            <option value="Final">Final</option>
+            <option value="Viva">Viva / Practical</option>
+          </select>
+          <input type="date" id="e_date" required>
+          <button type="submit" class="primary-btn">Add exam</button>
+        </form>
+        <div id="examList" class="stack list-large"></div>
+      </div>
+    </section>
+
+    <!-- ---------- CGPA ---------- -->
+    <section class="view" id="view-cgpa">
+      <header class="view-header">
+        <div>
+          <p class="eyebrow">10-point scale · editable</p>
+          <h1>CGPA Calculator</h1>
+        </div>
+        <button class="primary-btn" id="addSemesterBtn">+ Add semester</button>
+      </header>
+
+      <div class="cgpa-summary">
+        <div class="ring-card">
+          <svg viewBox="0 0 140 140" class="ring">
+            <circle class="ring-track" cx="70" cy="70" r="60"></circle>
+            <circle class="ring-fill" id="cgpaRing" cx="70" cy="70" r="60"></circle>
+          </svg>
+          <div class="ring-label">
+            <span class="ring-value" id="cgpaValue">0.00</span>
+            <span class="ring-unit">CGPA</span>
+          </div>
+        </div>
+        <div class="summary-notes">
+          <p><strong>How this works</strong> — grade points follow the O/A+/A/B+/B/C/P/F scale (10 → 0). Each semester's GPA is credit-weighted; your CGPA is credit-weighted across every semester you've added.</p>
+          <p id="creditTotals" class="dim-text">0 credits logged across 0 semesters.</p>
+        </div>
+      </div>
+
+      <div id="semesterList" class="stack"></div>
+    </section>
+
+    <!-- ---------- ATTENDANCE ---------- -->
+    <section class="view" id="view-attendance">
+      <header class="view-header">
+        <div>
+          <p class="eyebrow">Don't get debarred</p>
+          <h1>Attendance Tracker</h1>
+        </div>
+        <div class="threshold-control">
+          <label for="attThreshold">Required attendance %</label>
+          <input type="number" id="attThreshold" min="1" max="100" value="75">
+        </div>
+      </header>
+
+      <form id="attendanceForm" class="inline-form">
+        <input type="text" id="att_subject" placeholder="Subject" required>
+        <input type="number" id="att_attended" placeholder="Classes attended" min="0" required>
+        <input type="number" id="att_total" placeholder="Total classes held" min="0" required>
+        <button type="submit" class="primary-btn">Add subject</button>
+      </form>
+
+      <div id="attendanceList" class="grid attendance-grid"></div>
+    </section>
+
+    <!-- ---------- NOTES ---------- -->
+    <section class="view" id="view-notes">
+      <header class="view-header">
+        <div>
+          <p class="eyebrow">Everything you'd otherwise forget</p>
+          <h1>Notes</h1>
+        </div>
+        <button class="primary-btn" id="newNoteBtn">+ New note</button>
+      </header>
+
+      <input type="text" id="noteSearch" class="search-input" placeholder="Search notes by title or content…">
+
+      <div class="notes-layout">
+        <div id="notesList" class="notes-list"></div>
+        <div class="note-editor" id="noteEditor">
+          <input type="text" id="noteTitle" placeholder="Untitled note" class="note-title-input">
+          <textarea id="noteContent" placeholder="Start writing…" class="note-content-input"></textarea>
+          <div class="note-editor-actions">
+            <span class="dim-text" id="noteMeta"></span>
+            <button class="danger-btn" id="deleteNoteBtn">Delete note</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<!-- ===== ADD CLASS MODAL ===== -->
+<div class="modal-backdrop" id="classModal">
+  <div class="modal">
+    <div class="modal-head">
+      <h3>Add a class to your timetable</h3>
+      <button class="modal-close" data-close-modal>&times;</button>
+    </div>
+    <form id="classForm" class="stack-form">
+      <input type="text" id="c_subject" placeholder="Subject" required>
+      <select id="c_day">
+        <option>Monday</option><option>Tuesday</option><option>Wednesday</option>
+        <option>Thursday</option><option>Friday</option><option>Saturday</option><option>Sunday</option>
+      </select>
+      <input type="time" id="c_time" required>
+      <input type="text" id="c_room" placeholder="Room / link (optional)">
+      <button type="submit" class="primary-btn full">Add class</button>
+    </form>
+    <div id="classModalList" class="stack" style="margin-top:16px;"></div>
+  </div>
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>
